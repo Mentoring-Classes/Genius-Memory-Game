@@ -20,9 +20,5 @@ Thumbs.db
 *.njsproj
 *.sln
 
-# Build directories
-dist/
-build/
-
 # Environment variables
 .env
