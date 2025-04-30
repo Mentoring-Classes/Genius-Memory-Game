@@ -31,7 +31,7 @@ jobs:
       - name: Mover build para pasta /homolog
         run: |
           mkdir -p out/homolog
-          mv frontend/build/* out/homolog/  # Mover o build gerado para o diretório correto
+          mv frontend/dist/* out/homolog/  # Mover o build gerado (agora é a pasta 'dist') para o diretório correto
 
       - name: Deploy para GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
