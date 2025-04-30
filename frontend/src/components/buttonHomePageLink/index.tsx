@@ -9,7 +9,7 @@ interface ButtonLinkProps {
 
 const ButtonHomePageLink: React.FC<ButtonLinkProps> = ({ buttontext, to, id }) => {
   return (
-    <Link to={to} id={id} className="Link" aria-label={buttontext}>
+    <Link to={to} id={id} className="HomeLink" aria-label={buttontext}>
       {buttontext}
     </Link>
   );

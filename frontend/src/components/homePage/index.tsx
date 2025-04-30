@@ -32,11 +32,11 @@ const Home = () => {
 
 			<h1>Genius Game</h1>
 			<div className="GameModes">
-				<div >
+				<div className='divButtonHome'>
 					<ButtonHomePageLink buttontext="Solo Game"to="/soloGame"id="Solo-Game"/>
 					<ButtonHomePageLink buttontext="1 vs 1" to="/" id="One-vs-One" />
 				</div>
-				<div >
+				<div className='divButtonHome'>
 					<ButtonHomePageLink buttontext="Co-op" to="/coop" id="Co-op" />
 					<ButtonHomePageLink buttontext="Conta" to="/register" id="Conta" />
 				</div>
