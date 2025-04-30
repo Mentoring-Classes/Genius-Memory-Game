@@ -1,32 +1,39 @@
-name: Deploy Homologação (develop → /homolog)
+name: Deploy Frontend (develop → /homolog)
 
 on:
   push:
     branches:
-      - develop
+      - develop 
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout do repositório
+        uses: actions/checkout@v3
 
-      - name: Instalar dependências
-        run: npm ci
+      - name: Setup Node.js para o Frontend
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
 
-      - name: Verificar Vite
-        run: npx vite --version 
+      - name: Instalar dependências do Frontend
+        run: |
+          cd frontend  # Ir para a pasta do frontend
+          npm ci  # Usar npm ci para garantir que as dependências do frontend sejam instaladas
 
-      - name: Buildar homologação
-        run: npm run build
+      - name: Build do Frontend
+        run: |
+          cd frontend  # Novamente, garantir que estamos no diretório correto
+          npm run build  # Executar o build no frontend
 
       - name: Mover build para pasta /homolog
         run: |
           mkdir -p out/homolog
-          mv build/* out/homolog/
+          mv frontend/build/* out/homolog/  # Mover o build gerado para o diretório correto
 
-      - name: Deploy para gh-pages
+      - name: Deploy para GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
