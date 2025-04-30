@@ -1,37 +1,24 @@
 import 'intro.js/introjs.css';
 import ButtonLink from '../buttonLink';
 import './HomePage.css';
-import { useEffect, useState } from 'react';
 import ProfilePic from '../../assets/geniusLogo.svg';
 import LogoutPic from '../../assets/logout.svg';
-import Cookies from 'universal-cookie';
+import { useAuth } from '../../hooks/useAuth';
 
-const cookies = new Cookies();
 const Home = () => {
-	var token = cookies.get('token');
-	var userId = cookies.get('userId');
-	var [logged, setLogged] = useState(false);
-
-	useEffect(() => {
-		if (token && userId) {
-			setLogged(true);
-		}
-	}, [logged]);
-	const clearAuthCookies = (): void => {
-		cookies.remove('token', { path: '/Genius-Memory-Game' });
-		cookies.remove('userId', { path: '/Genius-Memory-Game' });
-	};
+	const { logged, userName, logout } = useAuth();
 
 	return (
 		<div className="HomePage">
 			{logged ? (
 				<div className="HomePage-Profile">
 					<img src={ProfilePic} />
+					
 					<div className="HomePage-Profile-Buttons">
+					<p id='logged'>{userName}</p>
 						<button
 							onClick={() => {
-								clearAuthCookies();
-								window.location.reload();
+								logout();
 							}}
 						>
 							<img src={LogoutPic} alt="" />

@@ -8,6 +8,7 @@ import ButtonLink from '../buttonLink';
 const CreateUser = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
+	const [userName, setUserName] = useState('');
 	const [registerError, setRegisterError] = useState(false);
 	const [registerSucess, setRegisterSucess] = useState(false);
 	const handleSubmit = async (e: FormEvent) => {
@@ -15,6 +16,7 @@ const CreateUser = () => {
 
 		try {
 			await axios.post(`${import.meta.env.VITE_API_URL}user/register`, {
+				userName,
 				email,
 				password,
 			});
@@ -48,6 +50,15 @@ const CreateUser = () => {
 							value={email}
 							onChange={(e) => setEmail(e.target.value)}
 							placeholder="Digite seu email:"
+						/>
+					</div>
+					<div className="form-group">
+						<label>Nome de Usuário</label>
+						<input
+							type="text"
+							value={userName}
+							onChange={(e) => setUserName(e.target.value)}
+							placeholder="Digite seu nome de usuário:"
 						/>
 					</div>
 					<div className="form-group">

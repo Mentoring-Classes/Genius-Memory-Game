@@ -28,7 +28,6 @@ const loginPage = () => {
 			);
 
 			cookies.set('token', response.data.token);
-			cookies.set('userId', response.data.id || '');
 
 			setLoginError(false);
 			navigate('/');
