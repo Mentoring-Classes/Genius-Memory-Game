@@ -1,0 +1,32 @@
+name: Deploy Homologação (develop → /homolog)
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Instalar dependências
+        run: npm install
+
+      - name: Buildar homologação
+        run: npm run build
+
+      - name: Mover build para pasta /homolog
+        run: |
+          mkdir -p out/homolog
+          mv build/* out/homolog/
+
+      - name: Deploy para gh-pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./out
+          destination_dir: .
+          publish_branch: gh-pages
