@@ -1,0 +1,71 @@
+:root {
+    --primary-color: #d42121;
+    --hover-color: #b81c1c;
+    --shadow-color: rgba(33, 212, 33, 0);
+    --font-size-large: 1.2rem;
+    --border-radius: 20px;
+}
+
+/* Estilo Geral do Link */
+.Link {
+    font-size: var(--font-size-large);
+    background-color: var(--primary-color);
+    border-radius: var(--border-radius);
+    width: 100px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    display: inline-block;
+    padding: 15px 25px;
+    font-size: 1.2rem;
+    color: white;
+
+    /* Efeitos de Transição */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.Link:hover {
+    background-color: var(--hover-color);
+    animation: pulse 1s;
+}
+
+
+/* Botão Voltar */
+#BackButton {
+    margin-top: 60px;
+}
+
+/* Animação de Pulso */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 #b81c1c;
+    }
+
+    70% {
+        box-shadow: 0 0 0 50px var(--shadow-color);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 var(--shadow-color);
+    }
+}
+
+.Link:focus {
+    outline: 2px dashed #b81c1c;
+    outline-offset: 4px;
+}
+
+@media (max-width: 675px) {
+    .Link {
+        padding: 10px 20px;
+        border-radius: 15px;
+        font-size: 1rem;
+        width: 90px;
+    }
+
+    #BackButton {
+        margin-top: 40px;
+    }
+}

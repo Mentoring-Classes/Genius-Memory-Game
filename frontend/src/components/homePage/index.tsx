@@ -1,5 +1,5 @@
 import 'intro.js/introjs.css';
-import ButtonLink from '../buttonLink';
+import ButtonHomePageLink from '../buttonHomePageLink';
 import './HomePage.css';
 import ProfilePic from '../../assets/geniusLogo.svg';
 import LogoutPic from '../../assets/logout.svg';
@@ -13,9 +13,9 @@ const Home = () => {
 			{logged ? (
 				<div className="HomePage-Profile">
 					<img src={ProfilePic} />
-					
+
 					<div className="HomePage-Profile-Buttons">
-					<p id='logged'>{userName}</p>
+						<p id="logged">{userName}</p>
 						<button
 							onClick={() => {
 								logout();
@@ -32,10 +32,14 @@ const Home = () => {
 
 			<h1>Genius Game</h1>
 			<div className="GameModes">
-				<ButtonLink buttontext="Solo Game" to="/soloGame" id="Solo-Game" />
-				<ButtonLink buttontext="1 vs 1" to="/" id="One-vs-One" />
-				<ButtonLink buttontext="Co-op" to="/coop" id="Co-op" />
-				<ButtonLink buttontext="Conta" to="/register" id="Conta" />
+				<div >
+					<ButtonHomePageLink buttontext="Solo Game"to="/soloGame"id="Solo-Game"/>
+					<ButtonHomePageLink buttontext="1 vs 1" to="/" id="One-vs-One" />
+				</div>
+				<div >
+					<ButtonHomePageLink buttontext="Co-op" to="/coop" id="Co-op" />
+					<ButtonHomePageLink buttontext="Conta" to="/register" id="Conta" />
+				</div>
 			</div>
 		</div>
 	);

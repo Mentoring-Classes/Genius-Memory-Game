@@ -44,6 +44,9 @@
     border-radius: 10px;
 
 }
+.divButtonHome {
+    gap: 10px;
+}
 #logged{
     color: rgb(0, 0, 0);
 }
