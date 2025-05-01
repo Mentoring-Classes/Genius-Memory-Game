@@ -1,6 +1,12 @@
 .HomeLink {
     --primary-color: #d42121;
     --hover-color: #b81c1c;
+    --secondary-color: #d42121;
+    --secondary-hover-color: #b81c1c;
+    --tertiary-color: #d42121;
+    --tertiary-hover-color: #b81c1c;
+    --quaternary-color: #d42121;
+    --quaternary-hover-color: #b81c1c;
     --shadow-color: rgba(33, 212, 33, 0);
     --font-size-large: 1.2rem;
     --border-radius: 20px;
