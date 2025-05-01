@@ -47,6 +47,27 @@
     margin-top: 60px;
 }
 
+.HomeLink.imageRed {
+    background-image: url("../assets/buttonColor/redButton.png");
+    background-size: cover;
+    background-position: center;
+}
+.HomeLink.imageBlue {
+    background-image: url("../assets/buttonColor/blueButton.png");
+    background-size: cover;
+    background-position: center;
+}
+.HomeLink.imageYellow {
+    background-image: url("../assets/buttonColor/yellowButton.png");
+    background-size: cover;
+    background-position: center;
+}
+.HomeLink.imageGreen {
+    background-image: url("../assets/buttonColor/greenButton.png");
+    background-size: cover;
+    background-position: center;
+}
+
 /* Animação de Pulso */
 @keyframes pulseHomeButton {
     0% {
