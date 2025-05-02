@@ -4,12 +4,14 @@ interface ICoopRoom extends Document {
     roomName: string;
     player1: string;
     player2: string;
+    _id: string;
 }
 
 const CoopSchema = new Schema<ICoopRoom>({
     roomName: { type: String, required: true},
     player1: { type: String, required: true},
     player2: { type: String },
+    _id: { type: String, required: true},
 }, { timestamps: true });
 
 export default mongoose.model<ICoopRoom>('CoopRoom', CoopSchema);
