@@ -12,7 +12,6 @@
     --border-radius: 20px;
 }
 
-/* Estilo Geral do Link */
 .HomeLink {
     display: flex;
     font-size: var(--font-size-large);
@@ -48,22 +47,22 @@
 }
 
 .HomeLink.imageRed {
-    background-image: url("../assets/buttonColor/redButton.png");
+    background-image: url("../../assets/buttonsColor/redButton.png");
     background-size: cover;
     background-position: center;
 }
 .HomeLink.imageBlue {
-    background-image: url("../assets/buttonColor/blueButton.png");
+    background-image: url("../../assets/buttonsColor/blueButton.png");
     background-size: cover;
     background-position: center;
 }
 .HomeLink.imageYellow {
-    background-image: url("../assets/buttonColor/yellowButton.png");
+    background-image: url("../../assets/buttonsColor/yellowButton.png");
     background-size: cover;
     background-position: center;
 }
 .HomeLink.imageGreen {
-    background-image: url("../assets/buttonColor/greenButton.png");
+    background-image: url("../../assets/buttonsColor/greenButton.png");
     background-size: cover;
     background-position: center;
 }
@@ -71,7 +70,7 @@
 /* Animação de Pulso */
 @keyframes pulseHomeButton {
     0% {
-        box-shadow: 0 0 0 0 #b81c1c;
+        box-shadow: 0 0 0 0 #c9c9c9;
     }
 
     70% {
