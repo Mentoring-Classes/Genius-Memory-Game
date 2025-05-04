@@ -2,7 +2,7 @@ import CoopRoom from "../models/CoopRoom";
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../middlewares/authMiddleware';
 import { COOP_ROOM_MESSAGES, USER_MESSAGES } from "../consts/Messages";
-import { io } from '../../src/server';
+
 import User from "../models/User";
 
 export const createRoom = async (req: AuthenticatedRequest, res: Response) => {
@@ -57,18 +57,14 @@ export const joinRoom = async (req: AuthenticatedRequest, res: Response) => {
 
     if (!room.player2) {
       room.player2 = user.userName;
-      
+
       await room.save();
 
-      io.to(room._id.toString()).emit('playerJoined', {
-        player1: room.player1,
-        player2: room.player2,
-      });
       return res.json({ message: COOP_ROOM_MESSAGES.JOIN_ROOM_SUCCESS, room });
     } else {
       return res.status(400).json({ message: COOP_ROOM_MESSAGES.ROOM_ALREADY_FULL });
     }
-    
+
   } catch (error) {
     return res.status(500).json({ message: "Erro ao entrar na sala", error });
   }

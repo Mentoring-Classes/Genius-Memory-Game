@@ -30,7 +30,7 @@ const CoopGame = () => {
 	if (!room) return <p>Erro ao carregar sala.</p>;
 
 	return (
-		<div>
+		<div className='coopGame'>
 			<h1>SALA AQUIIIIII</h1>
 			<div>
 				<h2>Nome da sala: {room.roomName}</h2>
