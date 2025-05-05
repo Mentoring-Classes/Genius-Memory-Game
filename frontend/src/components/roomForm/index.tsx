@@ -3,6 +3,8 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import './roomForm.css';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
+import { io } from 'socket.io-client';
+const socket = io(import.meta.env.VITE_API_URL);
 const cookies = new Cookies();
 
 const RoomForm = () => {
@@ -27,9 +29,15 @@ const RoomForm = () => {
 				}
 			);
 			const roomId = response.data.room._id;
-			console.log(`ID da sala: ${roomId}`);
+			socket.emit('createdRoom', roomName, roomId);
+			socket.once('roomCreated', (data) => {
+				console.log("Confirmação recebida do servidor via socket:", data);
+				// Aqui você pode setar algum estado, mostrar alerta, etc.
+				// Por exemplo: setRoom(data);
+			});
+	
 			navigate(`/coopGame/${roomId}`);
-			console.log(response.data);
+			
 			
 		} catch (error: any) {
 			console.error(error);

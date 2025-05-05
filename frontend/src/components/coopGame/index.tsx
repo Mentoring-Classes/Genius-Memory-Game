@@ -2,11 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
+import io from 'socket.io-client';
+import './coopGame.css';
+import ColorButtons from '../ColorButtons';
 
 const cookies = new Cookies();
+const socket = io(import.meta.env.VITE_API_URL);
+
 const CoopGame = () => {
 	const { id } = useParams();
-	const [room, setRoom] = useState<any>();
+	const [room, setRoom] = useState<any>(null);
+	const [player2, setPlayer2] = useState<any>(null);
 
 	useEffect(() => {
 		const token = cookies.get('token');
@@ -18,17 +24,32 @@ const CoopGame = () => {
 				},
 			})
 			.then((res) => {
-				console.log(res.data);
+				console.log("Sala carregada:", res.data);
 				setRoom(res.data);
+				setPlayer2(res.data.player2);
+				socket.emit('joinRoom', res.data);
 			})
 			.catch((err) => {
-				console.error(err);
+				console.error("Erro ao buscar sala:", err);
 				setRoom(null);
 			});
+
+		// Listener
+		socket.on('receive_message', (data) => {
+			console.log("Mensagem recebida do servidor via socket:", data);
+			setPlayer2(data.player2);
+		});
+
+		return () => {
+			socket.off('receive_message');
+		};
 	}, [id]);
 
 	if (!room) return <p>Erro ao carregar sala.</p>;
-
+	
+	const Sequence = async (colorChosenByPlayer: string) => {
+	
+	};
 	return (
 		<div className='coopGame'>
 			<h1>SALA AQUIIIIII</h1>
@@ -37,7 +58,10 @@ const CoopGame = () => {
 
 				<div className="card">
 					<h3>Jogador 1: {room.player1 || 'aguardando...'}</h3>
-					<h3>Jogador 2: {room.player2 || 'aguardando...'}</h3>
+					<h3>Jogador 2: {player2 || 'aguardando...'}</h3>
+				</div>
+				<div>
+					<ColorButtons Sequence={Sequence}></ColorButtons>
 				</div>
 			</div>
 		</div>

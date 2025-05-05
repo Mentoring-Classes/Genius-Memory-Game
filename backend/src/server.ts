@@ -6,6 +6,8 @@ import loggerMiddleware from "./middlewares/logger";
 import logger from "./utils/logger";
 import cors from "cors";
 import setupSwagger from './utils/swagger';
+import { Server } from "socket.io";
+import http from "http";
 
 dotenv.config();
 
@@ -17,6 +19,23 @@ app.use(loggerMiddleware);
 setupSwagger(app);
 app.use(routes);
 
+
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  }
+})
+io.on("connection", (socket) => {
+  console.log(`User connected: ${socket.id}`);
+
+  socket.on("joinRoom", (roomData) => {
+    console.log(`roomData: ${roomData.player2}`); 
+    io.emit("receive_message", roomData);
+  });
+
+})
 
 const PORT = process.env.PORT || 3000;
 const dbUser = process.env.DB_USER;
@@ -32,7 +51,7 @@ mongoose
   .catch((err) => {
     logger.error("Failed to connect to MongoDB:", err);
   });
-  
-app.listen(PORT, () => {
+
+server.listen(PORT, () => {
   logger.info(`Server listening on port ${PORT}`);
 });

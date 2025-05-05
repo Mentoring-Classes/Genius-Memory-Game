@@ -8,7 +8,6 @@ const CoopRoom = () => {
 
 	return (
 		<div className="coopRoom">
-			<h1 id="coopTitle">Cooperativo</h1>
 			{logged ? (
 				<RoomForm />
 			) : (
