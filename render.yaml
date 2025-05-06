@@ -1,0 +1,34 @@
+services:
+  # Serviço para o ambiente de produção
+  - name: genius-game-api-prod
+    type: web
+    runtime: node
+    rootDir: backend
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 8000
+      - key: CORS_ORIGINS
+        value: https://danielobara.github.io
+    branch: main
+    autoDeploy: true
+
+  # Serviço para o ambiente de homologação
+  - name: genius-game-api-dev
+    type: web
+    runtime: node
+    rootDir: backend
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: development
+      - key: PORT
+        value: 8000
+      - key: CORS_ORIGINS
+        value: https://danielobara.github.io/Genius-Memory-Game-Dev
+    branch: develop
+    autoDeploy: true

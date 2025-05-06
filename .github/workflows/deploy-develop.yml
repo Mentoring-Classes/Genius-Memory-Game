@@ -1,0 +1,39 @@
+name: Deploy to Development
+
+on:
+  push:
+    branches:
+      - develop
+  workflow_dispatch:
+
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      - name: Install Dependencies
+        run: |
+          cd frontend
+          npm ci
+      - name: Build (Development)
+        run: |
+          cd frontend
+          # Criando um arquivo .env.development para o ambiente de homologação
+          echo "VITE_APP_API_URL=https://genius-game-api-dev.onrender.com" > .env.development
+          npm run build
+      - name: Deploy to GitHub Pages (Development Branch)
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./frontend/dist
+          publish_branch: gh-pages-dev # Branch separada para ambiente de desenvolvimento
+          destination_dir: dev # Diretório dentro do gh-pages para versão de desenvolvimento
+
+
+  # Render fará o deploy do backend automaticamente ao detectar push para a branch develop
+  # através das configurações definidas no render.yaml
