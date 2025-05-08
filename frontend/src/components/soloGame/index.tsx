@@ -7,12 +7,8 @@ import './SoloGame.css';
 
 const SoloGame = () => {
 	const availableColors = ['Red', 'Yellow', 'Green', 'Blue'];
-	const [gameColorChoices, setGameColorChoices] = useState<
-		SoloGameState['gameColorChoices']
-	>([]);
-	const [playerChoices, setPlayerChoices] = useState<
-		SoloGameState['playerChoices']
-	>([]);
+	const [gameColorChoices, setGameColorChoices] = useState<SoloGameState['gameColorChoices']>([]);
+	const [playerChoices, setPlayerChoices] = useState<SoloGameState['playerChoices']>([]);
 	const [round, setRound] = useState<SoloGameState['round']>(1);
 
 	const { setFlashClass } = useBackground();

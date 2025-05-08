@@ -22,6 +22,9 @@ export const createRoom = async (req: AuthenticatedRequest, res: Response) => {
     roomName,
     player1: req.user.userName,
     player2: null,
+    currentPlayer: req.user.userName,
+    gameSequence: [],
+    playersSequence: [],
   });
 
   try {
@@ -44,6 +47,7 @@ export const getRoom = async (req: AuthenticatedRequest, res: Response) => {
     return res.status(500).json({ msg: COOP_ROOM_MESSAGES.ROOM_NOT_FOUND, error });
   }
 };
+
 export const joinRoom = async (req: AuthenticatedRequest, res: Response) => {
   const { roomName } = req.body;
   const userId = req.user.id;
