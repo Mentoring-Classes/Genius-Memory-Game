@@ -1,25 +1,25 @@
 import { Alert, Snackbar } from '@mui/material'
-import React, { useState} from 'react'
+import React, { useState } from 'react'
 
-const SnackBar = ({ 
-    errorAlert, 
-    setErrorAlert, 
-    sucessAlert, 
-    setSucessAlert,
-    sucessMessage,
-    errorMessage
+const SnackBar = ({
+	errorAlert,
+	setErrorAlert,
+	sucessAlert,
+	setSucessAlert,
+	sucessMessage,
+	errorMessage
 
-}: { 
-    errorAlert: boolean, 
-    setErrorAlert: React.Dispatch<React.SetStateAction<boolean>>, 
-    sucessAlert: boolean, 
-    setSucessAlert: React.Dispatch<React.SetStateAction<boolean>>
-    sucessMessage: string,
-    errorMessage: string
+}: {
+	errorAlert: boolean,
+	setErrorAlert: React.Dispatch<React.SetStateAction<boolean>>,
+	sucessAlert: boolean,
+	setSucessAlert: React.Dispatch<React.SetStateAction<boolean>>
+	sucessMessage: string,
+	errorMessage: string
 }) => {
-  return (
-    <div>
-        <Snackbar
+	return (
+		<div>
+			<Snackbar
 				open={sucessAlert}
 				autoHideDuration={3000}
 				onClose={() => setSucessAlert(false)}
@@ -40,8 +40,8 @@ const SnackBar = ({
 					{errorMessage}
 				</Alert>
 			</Snackbar>
-    </div>
-  )
+		</div>
+	)
 }
 
 export default SnackBar

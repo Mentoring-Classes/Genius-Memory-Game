@@ -5,6 +5,8 @@ import Cookies from 'universal-cookie';
 import io from 'socket.io-client';
 import './coopGame.css';
 import ColorButtons from '../ColorButtons';
+import { useAuth } from '../../hooks/useAuth';
+import SnackBar from '../snackbar';
 
 const cookies = new Cookies();
 const socket = io(import.meta.env.VITE_API_URL);
@@ -12,7 +14,10 @@ const socket = io(import.meta.env.VITE_API_URL);
 const CoopGame = () => {
 	const { id } = useParams();
 	const [room, setRoom] = useState<any>(null);
+	const { userName } = useAuth();
 	const [player2, setPlayer2] = useState<any>(null);
+	const [playerJoined, setPlayerJoined] = useState<boolean>(false);
+	const [playerJoinedMessage, setPlayerJoinedMessage] = useState<string>('');
 
 	useEffect(() => {
 		const token = cookies.get('token');
@@ -26,7 +31,6 @@ const CoopGame = () => {
 			.then((res) => {
 				console.log("Sala carregada:", res.data);
 				setRoom(res.data);
-				setPlayer2(res.data.player2);
 				socket.emit('joinRoom', res.data);
 			})
 			.catch((err) => {
@@ -34,25 +38,40 @@ const CoopGame = () => {
 				setRoom(null);
 			});
 
-		// Listener
+		// Listeners
 		socket.on('receive_message', (data) => {
-			console.log("Mensagem recebida do servidor via socket:", data);
+			console.log("Mensagem do socket.io:", data);
 			setPlayer2(data.player2);
+		});
+
+		socket.on('player_joined', (data) => {
+			console.log(data.message);
+			setPlayerJoinedMessage(data.message);
+			setPlayerJoined(true);
 		});
 
 		return () => {
 			socket.off('receive_message');
+			socket.off('player_joined');
 		};
 	}, [id]);
 
 	if (!room) return <p>Erro ao carregar sala.</p>;
 	
 	const Sequence = async (colorChosenByPlayer: string) => {
-	
+		socket.emit('playerClicked', { userName, colorChosenByPlayer, room });
 	};
 	return (
 		<div className='coopGame'>
 			<h1>SALA AQUIIIIII</h1>
+			<SnackBar
+				errorAlert={false}
+				setErrorAlert={() => {}}
+				sucessAlert={playerJoined}
+				setSucessAlert={setPlayerJoined}
+				sucessMessage={playerJoinedMessage}
+				errorMessage="Erro ao conectar"
+			/>
 			<div>
 				<h2>Nome da sala: {room.roomName}</h2>
 

@@ -27,14 +27,25 @@ const io = new Server(server, {
     methods: ["GET", "POST"],
   }
 })
+
 io.on("connection", (socket) => {
   console.log(`User connected: ${socket.id}`);
 
   socket.on("joinRoom", (roomData) => {
-    console.log(`roomData: ${roomData.player2}`); 
+    const playerName = roomData.player2 || roomData.player1;
+    
+    socket.join(roomData.roomId);
+    
+    io.to(roomData.roomId).emit("player_joined", {
+      message: `${playerName} entrou na sala!`
+    });
+    io.to(roomData.roomId).emit("playerChosenColor", {
+      message: `${playerName} Escolheu a cor ${roomData.colorChosenByPlayer}`,
+      color: roomData.colorChosenByPlayer
+    });
+    
     io.emit("receive_message", roomData);
   });
-
 })
 
 const PORT = process.env.PORT || 3000;
