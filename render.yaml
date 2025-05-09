@@ -1,0 +1,44 @@
+services:
+  # Serviço para o ambiente de produção
+  - name: genius-game-api-prod
+    type: web
+    runtime: node
+    rootDir: backend
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 8000
+      - key: CORS_ORIGINS
+        value: https://danielobara.github.io
+      # MongoDB Credentials - devem ser configurados como secrets no Render
+      - key: DB_USER
+        sync: false # Use o dashboard do Render para configurar este valor
+      - key: DB_PASS
+        sync: false # Use o dashboard do Render para configurar este valor
+    branch: main
+    autoDeploy: true
+
+  # Serviço para o ambiente de homologação
+  - name: genius-game-api-dev
+    type: web
+    runtime: node
+    rootDir: backend
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: development
+      - key: PORT
+        value: 8000
+      - key: CORS_ORIGINS
+        value: https://danielobara.github.io/dev,https://danielobara.github.io/homolog,https://danielobara.github.io/Genius-Memory-Game/dev,https://danielobara.github.io/Genius-Memory-Game/homolog
+      # MongoDB Credentials - devem ser configurados como secrets no Render
+      - key: DB_USER
+        sync: false # Use o dashboard do Render para configurar este valor
+      - key: DB_PASS
+        sync: false # Use o dashboard do Render para configurar este valor
+    branch: develop
+    autoDeploy: true

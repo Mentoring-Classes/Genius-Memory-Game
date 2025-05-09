@@ -1,0 +1,55 @@
+name: Deploy to Development/Homologation
+
+on:
+  push:
+    branches:
+      - develop
+  workflow_dispatch:
+
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      - name: Install Dependencies
+        run: |
+          cd frontend
+          npm ci
+      - name: Build (Development)
+        run: |
+          cd frontend
+          # Criando um arquivo .env.development para o ambiente de homologação
+          echo "VITE_APP_ENV=development" > .env.development
+          echo "VITE_APP_API_URL=https://genius-game-api-dev.onrender.com" >> .env.development
+          npm run build
+
+      # Deploy para o diretório /dev (compatibilidade com a configuração anterior)
+      - name: Deploy to GitHub Pages (dev directory)
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./frontend/dist
+          publish_branch: gh-pages
+          destination_dir: dev
+
+      # Deploy para o diretório /homolog (compatibilidade com a outra configuração)
+      - name: Copy build for homolog directory
+        run: |
+          mkdir -p ./homolog-build
+          cp -r ./frontend/dist/* ./homolog-build/
+
+      - name: Deploy to GitHub Pages (homolog directory)
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./homolog-build
+          publish_branch: gh-pages
+          destination_dir: homolog
+
+  # Render fará o deploy do backend automaticamente ao detectar push para a branch develop
+  # através das configurações definidas no render.yaml

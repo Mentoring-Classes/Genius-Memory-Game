@@ -14,5 +14,5 @@
       "@/*": ["./src/*"] // Alias para a pasta src (relativo ao tsconfig.json)
     }
   },
-  "include": ["./src/**/*"] // Inclui todos os arquivos na pasta src
+  "include": ["./src/**/*"], // Inclui todos os arquivos na pasta src
 }
