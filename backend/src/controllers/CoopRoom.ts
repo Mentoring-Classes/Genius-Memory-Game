@@ -73,3 +73,25 @@ export const joinRoom = async (req: AuthenticatedRequest, res: Response) => {
     return res.status(500).json({ message: "Erro ao entrar na sala", error });
   }
 };
+
+export const patchRoom = async (req: AuthenticatedRequest, res: Response) => {
+  const { roomName, gameSequence } = req.body;
+  const userId = req.user.id;
+
+  try {
+    const room = await CoopRoom.findOne({ roomName });
+    const user = await User.findById(userId);
+
+    if (!room) return res.status(404).json({ message: COOP_ROOM_MESSAGES.ROOM_NOT_FOUND });
+    if (!user) return res.status(404).json({ message: USER_MESSAGES.USER_NOT_FOUND });
+
+    room.gameSequence = gameSequence;
+
+   await room.save();
+
+    return res.json({ message: "Atualizado", room });
+
+  } catch (error) {
+    return res.status(500).json({ message: "Erro ao entrar na sala", error });
+  }
+};
