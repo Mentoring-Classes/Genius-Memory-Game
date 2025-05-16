@@ -7,6 +7,7 @@ interface ICoopRoom extends Document {
     currentPlayer: string;
     gameSequence: string[];
     playersSequence: string[];
+    round: number;
     _id: string;
 }
 
@@ -17,6 +18,7 @@ const CoopSchema = new Schema<ICoopRoom>({
     currentPlayer: { type: String, required: true},
     gameSequence: { type: [String]},
     playersSequence: { type: [String]},
+    round: { type: Number, default: 1 },
 }, { timestamps: true });
 
 export default mongoose.model<ICoopRoom>('CoopRoom', CoopSchema);

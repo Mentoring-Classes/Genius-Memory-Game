@@ -75,7 +75,7 @@ export const joinRoom = async (req: AuthenticatedRequest, res: Response) => {
 };
 
 export const patchRoom = async (req: AuthenticatedRequest, res: Response) => {
-  const { roomName, gameSequence } = req.body;
+  const { roomName, colorChosenByPlayer } = req.body;
   const userId = req.user.id;
 
   try {
@@ -84,14 +84,42 @@ export const patchRoom = async (req: AuthenticatedRequest, res: Response) => {
 
     if (!room) return res.status(404).json({ message: COOP_ROOM_MESSAGES.ROOM_NOT_FOUND });
     if (!user) return res.status(404).json({ message: USER_MESSAGES.USER_NOT_FOUND });
+    const availableColors = ['Red', 'Yellow', 'Green', 'Blue'];
+    const randomNumber = Math.floor(4 * Math.random());
 
-    room.gameSequence = gameSequence;
+    room.playersSequence = room.playersSequence.concat(colorChosenByPlayer);
+    const currentIndex = room.playersSequence.length - 1;
+    const correctColor = colorChosenByPlayer === room.gameSequence[currentIndex];
 
-   await room.save();
+    if (correctColor) {
+      if (room.playersSequence.length === room.gameSequence.length) {
+        const selectedColor = availableColors[randomNumber];
+        room.gameSequence = room.gameSequence.concat(selectedColor);
+        room.playersSequence = [];
+        room.round = room.round + 1;
+        await room.save();
+        return res.json({ message: "Rodada completa", room, correct: true });
+      }
+      await room.save();
+      return res.json({ message: "Cor correta", room, correct: true });
+    } else {
+      if (room.round !== 1) {
+        room.round = 1;
+        room.gameSequence = [];
+        room.playersSequence = [];
+        
+        const selectedColor = availableColors[randomNumber];
+        room.gameSequence = [selectedColor];
+      } else {
+        room.round = 1;
+        room.gameSequence = [room.gameSequence[0]];
+        room.playersSequence = [];
+      }
+      await room.save();
+      return res.json({ message: "Atualizado", room });
 
-    return res.json({ message: "Atualizado", room });
-
+    }
   } catch (error) {
     return res.status(500).json({ message: "Erro ao entrar na sala", error });
   }
-};
+}
