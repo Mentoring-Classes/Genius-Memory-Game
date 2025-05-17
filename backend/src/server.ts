@@ -7,6 +7,7 @@ import logger from "./utils/logger";
 import cors from "cors";
 import setupSwagger from './utils/swagger';
 import { Server } from "socket.io";
+import { setupSocketIO } from "./socket";
 import http from "http";
 
 dotenv.config();
@@ -28,26 +29,7 @@ const io = new Server(server, {
   }
 })
 
-io.on("connection", (socket) => {
-  console.log(`User connected: ${socket.id}`);
-
-  socket.on("joinRoom", (roomData) => {
-    console.log(`User ${socket.id} joining room:`, roomData);
-    const playerName = roomData.player2 || roomData.player1;
-    
-    socket.join(roomData.roomId);
-    console.log(`User ${socket.id} joined room ${roomData.roomId}`);
-    
-    io.to(roomData.roomId).emit("player_joined", {
-      message: `${playerName} entrou na sala!`
-    });
-
-    io.to(roomData.roomId).emit("flash_screen", {
-      flashType: roomData.flashType
-    });
-    io.emit("receive_message", roomData);
-  });
-})
+setupSocketIO(io);
 
 const PORT = process.env.PORT || 3000;
 const dbUser = process.env.DB_USER;

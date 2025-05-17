@@ -17,14 +17,18 @@ export const createRoom = async (req: AuthenticatedRequest, res: Response) => {
   if (roomExists) {
     return res.status(422).json({ msg: COOP_ROOM_MESSAGES.ROOM_ALREADY_EXISTS });
   }
+  const availableColors = ['Red', 'Yellow', 'Green', 'Blue'];
+  const randomNumber = Math.floor(4 * Math.random());
+  const selectedColor = availableColors[randomNumber];
 
   const room = new CoopRoom({
     roomName,
     player1: req.user.userName,
     player2: null,
     currentPlayer: req.user.userName,
-    gameSequence: [],
+    gameColorChoices: [selectedColor],
     playersSequence: [],
+    round: 1
   });
 
   try {
@@ -89,12 +93,12 @@ export const patchRoom = async (req: AuthenticatedRequest, res: Response) => {
 
     room.playersSequence = room.playersSequence.concat(colorChosenByPlayer);
     const currentIndex = room.playersSequence.length - 1;
-    const correctColor = colorChosenByPlayer === room.gameSequence[currentIndex];
+    const correctColor = colorChosenByPlayer === room.gameColorChoices[currentIndex];
 
     if (correctColor) {
-      if (room.playersSequence.length === room.gameSequence.length) {
+      if (room.playersSequence.length === room.gameColorChoices.length) {
         const selectedColor = availableColors[randomNumber];
-        room.gameSequence = room.gameSequence.concat(selectedColor);
+        room.gameColorChoices = room.gameColorChoices.concat(selectedColor);
         room.playersSequence = [];
         room.round = room.round + 1;
         await room.save();
@@ -105,14 +109,14 @@ export const patchRoom = async (req: AuthenticatedRequest, res: Response) => {
     } else {
       if (room.round !== 1) {
         room.round = 1;
-        room.gameSequence = [];
+        room.gameColorChoices = [];
         room.playersSequence = [];
         
         const selectedColor = availableColors[randomNumber];
-        room.gameSequence = [selectedColor];
+        room.gameColorChoices = [selectedColor];
       } else {
         room.round = 1;
-        room.gameSequence = [room.gameSequence[0]];
+        room.gameColorChoices = [room.gameColorChoices[0]];
         room.playersSequence = [];
       }
       await room.save();

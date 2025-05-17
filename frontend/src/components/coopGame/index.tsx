@@ -18,30 +18,30 @@ const CoopGame = () => {
 	const [player2, setPlayer2] = useState<any>(null);
 	const [playerJoined, setPlayerJoined] = useState<boolean>(false);
 	const [playerJoinedMessage, setPlayerJoinedMessage] = useState<string>('');
+	const [gameColorChoices, setGameColorChoices] = useState<Room['gameSequence']>([]);
 
 	useEffect(() => {
 		const token = cookies.get('token');
 
-		axios
-			.get(`${import.meta.env.VITE_API_URL}coopRoom/${id}`, {
+		axios.get(`${import.meta.env.VITE_API_URL}coopRoom/${id}`, {
 				headers: {
 					Authorization: `Bearer ${token}`,
 				},
 			})
 			.then((res) => {
 				console.log("Sala carregada:", res.data);
-				setRoom(res.data);
 				socket.emit('joinRoom', res.data);
 			})
 			.catch((err) => {
 				console.error("Erro ao buscar sala:", err);
-				setRoom(null);
 			});
 
 		// Listeners
-		socket.on('receive_message', (data) => {
+		socket.on('receive_data', (data) => {
 			console.log("Mensagem do socket.io:", data);
 			setPlayer2(data.player2);
+			setGameColorChoices(data.gameSequence);
+			setRoom(data);
 		});
 
 		socket.on('player_joined', (data) => {
@@ -51,10 +51,29 @@ const CoopGame = () => {
 		});
 
 		return () => {
-			socket.off('receive_message');
+			socket.off('receive_data');
 			socket.off('player_joined');
 		};
 	}, [id]);
+
+	useEffect(() => {
+		gameColorChoices.forEach((color, index) => {
+			const flashButtonColors = document.querySelector<HTMLButtonElement>(
+				`.${color}`,
+			);
+			if (flashButtonColors) {
+				setTimeout(() => {
+					flashButtonColors.style.backgroundColor = 'rgb(240, 240, 240)';
+				}, index * 750);
+				setTimeout(
+					() => {
+						flashButtonColors.style.backgroundColor = '';
+					},
+					index * 750 + 600,
+				);
+			}
+		});
+	}, [gameColorChoices]);
 
 	if (!room) return <p>Erro ao carregar sala.</p>;
 	
