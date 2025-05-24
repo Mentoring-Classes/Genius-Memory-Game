@@ -6,7 +6,7 @@ interface ICoopRoom extends Document {
     player2: string;
     currentPlayer: string;
     gameColorChoices: string[];
-    playersSequence: string[];
+    playersColorsSequence: string[];
     round: number;
     _id: string;
 }
@@ -17,7 +17,7 @@ const CoopSchema = new Schema<ICoopRoom>({
     player2: { type: String },
     currentPlayer: { type: String, required: true},
     gameColorChoices: { type: [String]},
-    playersSequence: { type: [String]},
+    playersColorsSequence: { type: [String]},
     round: { type: Number, default: 1 },
 }, { timestamps: true });
 

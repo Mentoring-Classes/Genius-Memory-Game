@@ -1,29 +1,26 @@
 import { Alert, Snackbar } from '@mui/material'
 import React, { useState } from 'react'
 
-const SnackBar = ({
-	errorAlert,
-	setErrorAlert,
-	sucessAlert,
-	setSucessAlert,
-	sucessMessage,
-	errorMessage
-
-}: {
+interface SnackBarProps {
 	errorAlert: boolean,
 	setErrorAlert: React.Dispatch<React.SetStateAction<boolean>>,
 	sucessAlert: boolean,
 	setSucessAlert: React.Dispatch<React.SetStateAction<boolean>>
 	sucessMessage: string,
 	errorMessage: string
-}) => {
+	autoHideDuration?: number
+	vertical: 'top' | 'bottom'
+	horizontal: 'left' | 'center' | 'right'
+}
+
+const SnackBar = ({errorAlert,setErrorAlert,sucessAlert,setSucessAlert,sucessMessage,errorMessage,autoHideDuration,vertical,horizontal}: SnackBarProps) => {
 	return (
 		<div>
 			<Snackbar
 				open={sucessAlert}
-				autoHideDuration={3000}
+				autoHideDuration={autoHideDuration}
 				onClose={() => setSucessAlert(false)}
-				anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+				anchorOrigin={{ vertical: vertical, horizontal: horizontal }}
 			>
 				<Alert className='PopUp' sx={{ fontSize: '1.25rem', paddingRight: '20px' }}>
 					{sucessMessage}

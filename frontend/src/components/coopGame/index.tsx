@@ -17,17 +17,20 @@ const CoopGame = () => {
 	const { userName } = useAuth();
 	const [player2, setPlayer2] = useState<any>(null);
 	const [playerJoined, setPlayerJoined] = useState<boolean>(false);
+	const [playerClicked, setPlayerClicked] = useState<boolean>(false);
+	const [playerClickedMessage, setPlayerClickedMessage] = useState<string>('');
 	const [playerJoinedMessage, setPlayerJoinedMessage] = useState<string>('');
 	const [gameColorChoices, setGameColorChoices] = useState<Room['gameSequence']>([]);
+	const [round, setRound] = useState<Room['round']>();
 
 	useEffect(() => {
 		const token = cookies.get('token');
 
 		axios.get(`${import.meta.env.VITE_API_URL}coopRoom/${id}`, {
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			})
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		})
 			.then((res) => {
 				console.log("Sala carregada:", res.data);
 				socket.emit('joinRoom', res.data);
@@ -38,9 +41,10 @@ const CoopGame = () => {
 
 		// Listeners
 		socket.on('receive_data', (data) => {
-			console.log("Mensagem do socket.io:", data);
+			console.log("Estado do jogo atualizado:", data);
 			setPlayer2(data.player2);
-			setGameColorChoices(data.gameSequence);
+			setGameColorChoices(data.gameColorChoices);
+			setRound(data.round);
 			setRoom(data);
 		});
 
@@ -50,50 +54,96 @@ const CoopGame = () => {
 			setPlayerJoined(true);
 		});
 
+		socket.on('roomUpdated', (data) => {
+			console.log("Clique registrado:", data);
+			setPlayerClicked(data.clicked);
+			setPlayerClickedMessage(data.message);
+		});
+
 		return () => {
-			socket.off('receive_data');
 			socket.off('player_joined');
+			socket.off('receive_data');
+			socket.off('roomUpdated');
 		};
 	}, [id]);
 
 	useEffect(() => {
-		gameColorChoices.forEach((color, index) => {
-			const flashButtonColors = document.querySelector<HTMLButtonElement>(
-				`.${color}`,
-			);
-			if (flashButtonColors) {
-				setTimeout(() => {
+		console.log(gameColorChoices);
+
+		const flashSequence = async () => {
+			for (let i = 0; i < gameColorChoices.length; i++) {
+				const color = gameColorChoices[i];
+				const flashButtonColors = document.querySelector<HTMLButtonElement>(`.${color}`);
+
+				if (flashButtonColors) {
 					flashButtonColors.style.backgroundColor = 'rgb(240, 240, 240)';
-				}, index * 750);
-				setTimeout(
-					() => {
-						flashButtonColors.style.backgroundColor = '';
-					},
-					index * 750 + 600,
-				);
+					await new Promise(resolve => setTimeout(resolve, 600));
+					flashButtonColors.style.backgroundColor = '';
+					await new Promise(resolve => setTimeout(resolve, 150));
+				}
 			}
-		});
-	}, [gameColorChoices]);
+		};
+
+		flashSequence();
+	}, [round]);
 
 	if (!room) return <p>Erro ao carregar sala.</p>;
-	
+
 	const Sequence = async (colorChosenByPlayer: string) => {
-		socket.emit('playerClicked', { userName, colorChosenByPlayer, room });
+		const token = cookies.get('token');
+		try {
+			const response = await axios.patch(
+				`${import.meta.env.VITE_API_URL}coopRoom/update`,
+				{
+					roomName: room.roomName,
+					colorChosenByPlayer
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				}
+			);
+			
+			if (response.data.room) {
+				socket.emit('playerClicked', {
+					userName,
+					colorChosenByPlayer,
+					room: response.data.room
+				});
+			}
+		} catch (error) {
+			console.error("Erro ao processar jogada:", error);
+		}
 	};
 	return (
 		<div className='coopGame'>
 			<h1>SALA AQUIIIIII</h1>
 			<SnackBar
 				errorAlert={false}
-				setErrorAlert={() => {}}
+				setErrorAlert={() => { }}
 				sucessAlert={playerJoined}
 				setSucessAlert={setPlayerJoined}
 				sucessMessage={playerJoinedMessage}
 				errorMessage="Erro ao conectar"
+				autoHideDuration={2000}
+				vertical='bottom'
+				horizontal='center'
+			/>
+			<SnackBar
+				errorAlert={false}
+				setErrorAlert={() => { }}
+				sucessAlert={playerClicked}
+				setSucessAlert={setPlayerClicked}
+				sucessMessage={playerClickedMessage}
+				errorMessage="Erro ao conectar"
+				autoHideDuration={700}
+				vertical='top'
+				horizontal='left'
 			/>
 			<div>
 				<h2>Nome da sala: {room.roomName}</h2>
-
+				<p>Round:{round}</p>
 				<div className="card">
 					<h3>Jogador 1: {room.player1 || 'aguardando...'}</h3>
 					<h3>Jogador 2: {player2 || 'aguardando...'}</h3>

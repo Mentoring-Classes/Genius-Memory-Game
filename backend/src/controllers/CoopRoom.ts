@@ -27,7 +27,7 @@ export const createRoom = async (req: AuthenticatedRequest, res: Response) => {
     player2: null,
     currentPlayer: req.user.userName,
     gameColorChoices: [selectedColor],
-    playersSequence: [],
+    playersColorsSequence: [],
     round: 1
   });
 
@@ -91,15 +91,15 @@ export const patchRoom = async (req: AuthenticatedRequest, res: Response) => {
     const availableColors = ['Red', 'Yellow', 'Green', 'Blue'];
     const randomNumber = Math.floor(4 * Math.random());
 
-    room.playersSequence = room.playersSequence.concat(colorChosenByPlayer);
-    const currentIndex = room.playersSequence.length - 1;
+    room.playersColorsSequence = room.playersColorsSequence.concat(colorChosenByPlayer);
+    const currentIndex = room.playersColorsSequence.length - 1;
     const correctColor = colorChosenByPlayer === room.gameColorChoices[currentIndex];
 
     if (correctColor) {
-      if (room.playersSequence.length === room.gameColorChoices.length) {
+      if (room.playersColorsSequence.length === room.gameColorChoices.length) {
         const selectedColor = availableColors[randomNumber];
         room.gameColorChoices = room.gameColorChoices.concat(selectedColor);
-        room.playersSequence = [];
+        room.playersColorsSequence = [];
         room.round = room.round + 1;
         await room.save();
         return res.json({ message: "Rodada completa", room, correct: true });
@@ -110,14 +110,14 @@ export const patchRoom = async (req: AuthenticatedRequest, res: Response) => {
       if (room.round !== 1) {
         room.round = 1;
         room.gameColorChoices = [];
-        room.playersSequence = [];
+        room.playersColorsSequence = [];
         
         const selectedColor = availableColors[randomNumber];
         room.gameColorChoices = [selectedColor];
       } else {
         room.round = 1;
         room.gameColorChoices = [room.gameColorChoices[0]];
-        room.playersSequence = [];
+        room.playersColorsSequence = [];
       }
       await room.save();
       return res.json({ message: "Atualizado", room });
