@@ -37,6 +37,9 @@ const CreateUser = () => {
 				setSucessAlert={setRegisterSucess}
 				sucessMessage="Usuário Criado"
 				errorMessage="Erro ao criar usuário"
+				autoHideDuration={2000}
+				vertical='bottom'
+				horizontal='center'
 			/>
 
 			<div className="create-user-card">

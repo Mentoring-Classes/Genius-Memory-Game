@@ -45,6 +45,9 @@ const loginPage = () => {
 				setSucessAlert={setLoginSucess}
 				sucessMessage="Login feito com sucesso"
 				errorMessage="Erro ao fazer login"
+				autoHideDuration={2000}
+				vertical='bottom'
+				horizontal='center'
 			/>
 
 			<div className="login-card">
