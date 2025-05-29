@@ -26,12 +26,12 @@ export function setupSocketIO(io: Server) {
 
       io.to(roomData.roomId).emit("receive_data", roomData);
     });    
-    
-    socket.on("playerClicked", (data) => {
+      socket.on("playerClicked", (data) => {
       io.to(data.room.roomId).emit("roomUpdated", {
         message: `${data.userName} clicou ${data.colorChosenByPlayer}`,
         room: data.room,
-        clicked: true
+        clicked: true,
+        correct: data.correct
       });
       
       io.to(data.room.roomId).emit("receive_data", data.room);

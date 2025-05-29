@@ -41,8 +41,7 @@ const SoloGame = () => {
 
 	const Sequence = async (colorChosenByPlayer: string) => {
 		setPlayerChoices(playerChoices.concat(colorChosenByPlayer));
-		const correctColor =
-			colorChosenByPlayer === gameColorChoices[playerChoices.length];
+		const correctColor = colorChosenByPlayer === gameColorChoices[playerChoices.length];
 
 		if (correctColor) {
 			setFlashClass('flash-green');

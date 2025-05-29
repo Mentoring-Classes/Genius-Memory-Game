@@ -6,6 +6,7 @@ import io from 'socket.io-client';
 import './coopGame.css';
 import ColorButtons from '../ColorButtons';
 import { useAuth } from '../../hooks/useAuth';
+import { useBackground } from '../BackgroundContext/BackgroundContext';
 import SnackBar from '../snackbar';
 
 const cookies = new Cookies();
@@ -15,6 +16,7 @@ const CoopGame = () => {
 	const { id } = useParams();
 	const [room, setRoom] = useState<any>(null);
 	const { userName } = useAuth();
+	const { setFlashClass } = useBackground();
 	const [player2, setPlayer2] = useState<any>(null);
 	const [playerJoined, setPlayerJoined] = useState<boolean>(false);
 	const [playerClicked, setPlayerClicked] = useState<boolean>(false);
@@ -52,12 +54,18 @@ const CoopGame = () => {
 			console.log(data.message);
 			setPlayerJoinedMessage(data.message);
 			setPlayerJoined(true);
-		});
-
-		socket.on('roomUpdated', (data) => {
+		});		socket.on('roomUpdated', (data) => {
 			console.log("Clique registrado:", data);
 			setPlayerClicked(data.clicked);
 			setPlayerClickedMessage(data.message);
+
+			if (data.correct) {
+				setFlashClass('flash-green');
+				setTimeout(() => setFlashClass(''), 300);
+			} else {
+				setFlashClass('flash-red');
+				setTimeout(() => setFlashClass(''), 300);
+			}
 		});
 
 		return () => {
@@ -104,12 +112,12 @@ const CoopGame = () => {
 					},
 				}
 			);
-			
-			if (response.data.room) {
+					if (response.data) {
 				socket.emit('playerClicked', {
 					userName,
 					colorChosenByPlayer,
-					room: response.data.room
+					room: response.data.room,
+					correct: response.data.correct
 				});
 			}
 		} catch (error) {
@@ -118,7 +126,6 @@ const CoopGame = () => {
 	};
 	return (
 		<div className='coopGame'>
-			<h1>SALA AQUIIIIII</h1>
 			<SnackBar
 				errorAlert={false}
 				setErrorAlert={() => { }}
