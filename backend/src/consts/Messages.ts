@@ -32,4 +32,5 @@ export const COOP_ROOM_MESSAGES = {
     ROOM_ALREADY_FULL: 'Room is already full',
     JOIN_ROOM_SUCCESS: 'Joined room successfully',
     ERROR_JOINING_ROOM: 'Error joining room',
+    NOT_CURRENT_PLAYER: 'You are not the current player',
 }

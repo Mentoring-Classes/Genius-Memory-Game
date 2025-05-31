@@ -95,33 +95,40 @@ export const patchRoom = async (req: AuthenticatedRequest, res: Response) => {
     const currentIndex = room.playersColorsSequence.length - 1;
     const correctColor = colorChosenByPlayer === room.gameColorChoices[currentIndex];
 
-    if (correctColor) {
-      if (room.playersColorsSequence.length === room.gameColorChoices.length) {
-        const selectedColor = availableColors[randomNumber];
-        room.gameColorChoices = room.gameColorChoices.concat(selectedColor);
-        room.playersColorsSequence = [];
-        room.round = room.round + 1;
+    if (room.currentPlayer === user.userName) {
+      console.log(`Jogador atual: ${room.currentPlayer}, Jogador tentando jogar: ${user.userName}`);
+      
+      if (correctColor) {
+        if (room.playersColorsSequence.length === room.gameColorChoices.length) {
+          const selectedColor = availableColors[randomNumber];
+          room.gameColorChoices = room.gameColorChoices.concat(selectedColor);
+          room.playersColorsSequence = [];
+          room.currentPlayer = room.currentPlayer === room.player1 ? room.player2 : room.player1;
+
+          room.round = room.round + 1;
+          await room.save();
+          return res.json({ message: "Rodada completa", room, correct: true });
+        }
         await room.save();
-        return res.json({ message: "Rodada completa", room, correct: true });
-      }
-      await room.save();
-      return res.json({ message: "Cor correta", room, correct: true });
-    } else {
-      if (room.round !== 1) {
-        room.round = 1;
-        room.gameColorChoices = [];
-        room.playersColorsSequence = [];
-        
-        const selectedColor = availableColors[randomNumber];
-        room.gameColorChoices = [selectedColor];
+        return res.json({ message: "Cor correta", room, correct: true });
       } else {
-        room.round = 1;
-        room.gameColorChoices = [room.gameColorChoices[0]];
-        room.playersColorsSequence = [];
+        if (room.round !== 1) {
+          room.round = 1;
+          room.gameColorChoices = [];
+          room.playersColorsSequence = [];
+          room.currentPlayer = room.currentPlayer === room.player1 ? room.player2 : room.player1;
+          const selectedColor = availableColors[randomNumber];
+          room.gameColorChoices = [selectedColor];
+        } else {
+          room.round = 1;
+          room.gameColorChoices = [room.gameColorChoices[0]];
+          room.playersColorsSequence = [];
+        }
       }
       await room.save();
       return res.json({ message: "Atualizado", room });
-
+    }else{
+      return res.status(403).json({ message: COOP_ROOM_MESSAGES.NOT_CURRENT_PLAYER });
     }
   } catch (error) {
     return res.status(500).json({ message: "Erro ao entrar na sala", error });
