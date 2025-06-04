@@ -31,7 +31,7 @@ const SnackBar = ({errorAlert,setErrorAlert,sucessAlert,setSucessAlert,sucessMes
 				open={errorAlert}
 				autoHideDuration={3000}
 				onClose={() => setErrorAlert(false)}
-				anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+				anchorOrigin={{ vertical: vertical, horizontal: horizontal }}
 			>
 				<Alert className='PopUp' severity="error" sx={{ fontSize: '1.25rem', paddingRight: '20px' }}>
 					{errorMessage}

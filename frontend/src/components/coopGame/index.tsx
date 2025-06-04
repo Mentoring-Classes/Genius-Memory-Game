@@ -20,6 +20,7 @@ const CoopGame = () => {
 	const [player2, setPlayer2] = useState<any>(null);
 	const [playerJoined, setPlayerJoined] = useState<boolean>(false);
 	const [playerClicked, setPlayerClicked] = useState<boolean>(false);
+	const [notCurrentPlayer, setNotCurrentPlayer] = useState<boolean>(false);
 	const [playerClickedMessage, setPlayerClickedMessage] = useState<string>('');
 	const [playerJoinedMessage, setPlayerJoinedMessage] = useState<string>('');
 	const [gameColorChoices, setGameColorChoices] = useState<Room['gameSequence']>([]);
@@ -122,6 +123,7 @@ const CoopGame = () => {
 			}
 		} catch (error) {
 			console.error("Erro ao processar jogada:", error);
+			setNotCurrentPlayer(true);
 		}
 	};
 	return (
@@ -145,6 +147,17 @@ const CoopGame = () => {
 				sucessMessage={playerClickedMessage}
 				errorMessage="Erro ao conectar"
 				autoHideDuration={700}
+				vertical='top'
+				horizontal='left'
+			/>
+			<SnackBar
+				errorAlert={notCurrentPlayer}
+				setErrorAlert={setNotCurrentPlayer}
+				sucessAlert={false}
+				setSucessAlert={() => { }}
+				sucessMessage=""
+				errorMessage="Espere sua vez de jogar"
+				autoHideDuration={1500}
 				vertical='top'
 				horizontal='left'
 			/>
