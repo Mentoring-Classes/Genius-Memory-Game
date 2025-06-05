@@ -78,7 +78,7 @@ export const joinRoom = async (req: AuthenticatedRequest, res: Response) => {
   }
 };
 
-export const patchRoom = async (req: AuthenticatedRequest, res: Response) => {
+export const updateRoom = async (req: AuthenticatedRequest, res: Response) => {
   const { roomName, colorChosenByPlayer } = req.body;
   const userId = req.user.id;
 
@@ -134,3 +134,34 @@ export const patchRoom = async (req: AuthenticatedRequest, res: Response) => {
     return res.status(500).json({ message: "Erro ao entrar na sala", error });
   }
 }
+
+export const leaveRoom = async (req: AuthenticatedRequest, res: Response) => {
+  const { roomName } = req.body;
+  const userId = req.user.id;
+  
+  try { 
+    const room: any = await CoopRoom.findOne({ roomName });
+    const user: any = await User.findById(userId);
+
+    if (room.player1 === user.userName || room.player2 === user.userName) {
+      
+      if (room.player1 === user.userName) {
+        room.player1 = null;
+      } else if (room.player2 === user.userName) {
+        room.player2 = null;
+      }
+      if (!room.player1 && !room.player2) {
+        await CoopRoom.findOneAndDelete({ roomName });
+        return res.json({ msg: "sala deletada" });
+      }
+
+      await room.save();
+      return res.json({ msg: "Você saiu da sala", room });
+    }
+
+    return res.status(400).json({ msg: "Você não está na sala" });
+
+  } catch (error) {
+    return res.status(500).json({ msg: COOP_ROOM_MESSAGES.ROOM_NOT_FOUND, error });
+  }
+};
