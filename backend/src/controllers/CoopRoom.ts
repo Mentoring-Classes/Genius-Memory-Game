@@ -137,18 +137,20 @@ export const updateRoom = async (req: AuthenticatedRequest, res: Response) => {
 
 export const leaveRoom = async (req: AuthenticatedRequest, res: Response) => {
   const { roomName } = req.body;
-  const userId = req.user.id;
+  const userName = req.user.userName;
   
   try { 
-    const room: any = await CoopRoom.findOne({ roomName });
-    const user: any = await User.findById(userId);
+    
+    const room = await CoopRoom.findOne({ roomName });
+    if (!room) return res.status(404).json({ message: COOP_ROOM_MESSAGES.ROOM_NOT_FOUND });
 
-    if (room.player1 === user.userName || room.player2 === user.userName) {
+    if (room.player1 === userName || room.player2 === userName) {
       
-      if (room.player1 === user.userName) {
-        room.player1 = null;
-      } else if (room.player2 === user.userName) {
-        room.player2 = null;
+      if (room.player1 === userName) {
+        room.player1 = '';
+        await CoopRoom.findOneAndDelete({ roomName });
+      } else if (room.player2 === userName) {
+        room.player2 = '';
       }
       if (!room.player1 && !room.player2) {
         await CoopRoom.findOneAndDelete({ roomName });

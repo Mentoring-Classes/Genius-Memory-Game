@@ -8,6 +8,7 @@ import ColorButtons from '../ColorButtons';
 import { useAuth } from '../../hooks/useAuth';
 import { useBackground } from '../BackgroundContext/BackgroundContext';
 import SnackBar from '../snackbar';
+import ButtonLink from '../buttonLink';
 
 const cookies = new Cookies();
 const socket = io(import.meta.env.VITE_API_URL);
@@ -75,6 +76,29 @@ const CoopGame = () => {
 			socket.off('roomUpdated');
 		};
 	}, [id]);
+	function leaveRoom() {
+		const token = cookies.get('token');
+
+		axios.patch(`${import.meta.env.VITE_API_URL}coopRoom/leave`, 
+				{
+					roomName: room.roomName,
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				}
+		)
+			.then((res) => {
+				console.log("você saiu da sala", res.data);
+				socket.emit('joinRoom', res.data);
+			})
+			.catch((err) => {
+				console.error("Erro ao buscar sala:", err);
+			});
+	}
+	
+
 
 	useEffect(() => {
 		console.log(gameColorChoices);
@@ -171,6 +195,7 @@ const CoopGame = () => {
 				<div>
 					<ColorButtons Sequence={Sequence}></ColorButtons>
 				</div>
+				<ButtonLink buttontext={"Sair da sala"} onClick={leaveRoom} to={'/coop'}></ButtonLink>
 			</div>
 		</div>
 	);
